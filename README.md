@@ -74,7 +74,7 @@ video::-webkit-media-controls-overlay-play-button {
 
 由于 Shadow DOM 实际上也是 DOM 的一种，所以在 Shadow DOM 中还可以继续嵌套 Shadow DOM，就像上面那样。
 
-浏览器中还有很多 Element 都使用了 Shadow DOM 的形式进行封装，比如 <input>、<select>、<audio> 等，这里就不一一展示了。
+浏览器中还有很多 Element 都使用了 Shadow DOM 的形式进行封装，比如 `<input>、<select>、<audio>` 等，这里就不一一展示了。
 
 由于 Shadow DOM 的隔离性，所以即便是你在外面写了个样式：div { background-color: red !important; }，Shadow DOM 内部的 div 也不会受到任何影响。
 
@@ -217,7 +217,7 @@ window.customElements.define('my-element', class extends HTMLElement {
 
 通常在 Custom Elements 的 constructor() 构造函数中去创建 Shadow DOM，并对 Shadow DOM 中的节点添加事件监听、对特定事件触发原生 Events 对象。
 
-正常编写 html 文档时，我们可能会给 Custom Elements 添加一些子节点，像这样：<my-element><h1>Title</h1><p>Content</p></my-element>，而我们创建的 Shadow DOM 又拥有其自己的结构，怎样将这些子节点放置到 Shadow DOM 中正确的位置上呢？
+正常编写 html 文档时，我们可能会给 Custom Elements 添加一些子节点，像这样：`<my-element><h1>Title</h1><p>Content</p></my-element>`，而我们创建的 Shadow DOM 又拥有其自己的结构，怎样将这些子节点放置到 Shadow DOM 中正确的位置上呢？
 
 在 React 中，这些子节点被放置在 props 的 children 中，我们可以在 render() 时选择将它放在哪里。而在 Shadow DOM 中有一个特殊的标签：<slot>，这个标签的用处就如同其字面意思，在 Shadow DOM 上放置一个“插槽”，然后 Custom Elements 的子节点就会自动放置到这个“插槽”中了。
 
