@@ -1,6 +1,6 @@
 # 原生 HTML 组件
 
-(assets/web_components.png)
+![](assets/web_compnents.png)
 
 >嘿！看看这几年啊，Web 前端的发展可是真快啊！
 
@@ -23,7 +23,7 @@ Shadow DOM 则是原生组件封装的基本工具，它可以实现组件与组
 Custom Elements 是用来包装原生组件的容器，通过它，你就只需要写一个标签，就能得到一个完整的组件。
 
 HTML Imports 则是 HTML 中类似于 ES6 Module 的一个东西，你可以直接 import 另一个 html 文件，然后使用其中的 DOM 节点。但是，由于 HTML Imports 和 ES6 Module 实在是太像了，并且除了 Chrome 以外没有浏览器愿意实现它，所以它已经被废弃并不推荐使用了。未来会使用 ES6 Module 来取代它，但是现在貌似还没有取代的方案，在新版的 Chrome 中这个功能已经被删除了，并且在使用的时候会在 Console 中给出警告。警告中说使用 ES Modules 来取代，但是我测试在 Chrome 71 中 ES Module 会强制检测文件的 MIME 类型必须为 JavaScript 类型，应该是暂时还没有实现支持。
-(assets/console.png)
+![](assets/console.png)
 
 ## Shadow DOM
 
@@ -53,13 +53,13 @@ Shadow DOM 的特别之处就在于它致力于创建一个相对独立的一个
 等一下！不是说 Shadow DOM 吗？这和普通 DOM 有啥区别？？？
 
 在 Chrome 中，Elements 默认是不显示内部实现的 Shadow DOM 节点的，需要在设置中启用：
-(assets/demo2.png)
-(assets/demo3.png)
+![](assets/demo2.png)
+![](assets/demo3.png)
 
 >注：浏览器默认隐藏自身的 Shadow DOM 实现，但如果是用户通过脚本创造的 Shadow DOM，是不会被隐藏的。
 
 然后，我们就可以看到 video 标签的真面目了：
-(assets/demo4.png)
+![](assets/demo4.png)
 
 在这里，你可完全像调试普通 DOM 一样随意调整 Shadow DOM 中的内容（反正和普通 DOM 一样，刷新一下就恢复了）。
 
@@ -70,7 +70,7 @@ video::-webkit-media-controls-overlay-play-button {
   background-color: orange;
 }
 ```
-(assets/demo5.png)
+![](assets/demo5.png)
 
 由于 Shadow DOM 实际上也是 DOM 的一种，所以在 Shadow DOM 中还可以继续嵌套 Shadow DOM，就像上面那样。
 
@@ -94,9 +94,9 @@ mode: 'open' 和 mode: 'closed' 有什么区别呢？在调用 attachShadow 创�
 
 可以从上面 Shadow DOM 的截图中看到 #shadow-root (user-agent) 的字样，这就是 ShadowRoot 对象了，而括号中的 user-agent 表示这是浏览器内部实现的 Shadow DOM，如果使用通过脚本自己创建的 ShadowRoot，括号中会显示为 open 或 closed 表示 Shadow DOM 的 mode。
 
-(assets/demo6)
+![](assets/demo6.png)
 
->浏览器内部实现的 user-agent 的 mode 为 closed，所以你不能通过节点的 ShadowRoot 属性去获得其 ShadowRoot 对象，也就意味着你不能通过脚本对这些浏览器内部实现的 Shadow DOM 进行改造。
+> 浏览器内部实现的 user-agent 的 mode 为 closed，所以你不能通过节点的 ShadowRoot 属性去获得其 ShadowRoot 对象，也就意味着你不能通过脚本对这些浏览器内部实现的 Shadow DOM 进行改造。
 
 ## HTML Template
 
@@ -106,7 +106,7 @@ mode: 'open' 和 mode: 'closed' 有什么区别呢？在调用 attachShadow 创�
 
 HTML Template 实际上就是在 html 中的一个 <template> 标签，正常情况下，这个标签下的内容是不会被渲染的，包括标签下的 img、style、script 等都是不会被加载或执行的。你可以在脚本中使用 getElementById 之类的方法得到 <template> 标签对应的节点，但是却无法直接访问到其内部的节点，因为默认他们只是模版，在浏览器中表现为 #document-fragment，字面意思就是“文档片段”，可以通过节点对象的 content 属性来访问到这个 document-fragment 对象。
   
-(assets/template.png)
+![](assets/template.png)
 
 通过 document-fragment 对象，就可以访问到 template 内部的节点了，通过 document.importNode 方法，可以将 document-fragment 对象创建一份副本，然后可以使用一切 DOM 属性方法替换副本中的模版内容，最终将其插入到 DOM 或是 Shadow DOM 中。
 
@@ -157,13 +157,13 @@ Custom Elements 的生命周期函数并不多，但是足够使用。这里我�
 
 在 Custom Elements 中，constructor() 构造函数就是其原本的含义：初始化，和 React 的初始化类似，但它没有像 React 中那样将其拆分为多个部分。在这个阶段，组件仅仅是被创建出来（比如通过 document.createElement()），但是还没有插入到 DOM 树中。
 
--connectedCallback(): 组件实例已被插入到 DOM 树中，用于进行一些展示相关的初始化操作。
+- connectedCallback(): 组件实例已被插入到 DOM 树中，用于进行一些展示相关的初始化操作。
 
 对应 React 中 Mounting 阶段的最后一个生命周期：componentDidMount()。
 
 在这个阶段，组件已经被插入到 DOM 树中了，或是其本身就在 html 文件中写好在 DOM 树上了，这个阶段一般是进行一些展示相关的初始化，比如加载数据、图片、音频或视频之类并进行展示。
 
--attributeChangedCallback(attrName, oldVal, newVal): 组件属性发生变化，用于更新组件的状态。
+- attributeChangedCallback(attrName, oldVal, newVal): 组件属性发生变化，用于更新组件的状态。
 
 对应 React 中的 Updating 阶段：static getDerivedStateFromProps(props, state)、shouldComponentUpdate(nextProps, nextState)、render()、getSnapshotBeforeUpdate(prevProps, prevState) 和 componentDidUpdate(prevProps, prevState, snapshot)。
 
@@ -179,11 +179,11 @@ class AwesomeElement extends HTMLElement {
 }
 ```
 
--disconnectedCallback(): 组件被从 DOM 树中移除，用于进行一些清理操作。
+- disconnectedCallback(): 组件被从 DOM 树中移除，用于进行一些清理操作。
 
 对应 React 中的 Unmounting 阶段：componentWillUnmount()。
 
--adoptedCallback(): 组件实例从一个文档被移动到另一个文档。
+- adoptedCallback(): 组件实例从一个文档被移动到另一个文档。
 
 这个生命周期是原生组件独有的，React 中没有类似的生命周期。这个生命周期函数也并不常用到，一般在操作多个 document 的时候会遇到，调用 document.adoptNode() 函数转移节点所属 document 时会触发这个生命周期。
 
@@ -209,7 +209,7 @@ window.customElements.define('my-element', class extends HTMLElement {
 
 这样，我们就可以放心的在加载 Custom Elements 的 JavaScript 的 <script> 标签上使用 async 属性来延迟加载了（当然，如果是使用 ES6 Modules 形式的话默认的加载行为就会和 defer 类似）。
   
-  (assets/demo7.png)
+ ![](assets/custom_elements.svg)
   
 ## Custom Elements + Shadow DOM
 
@@ -268,7 +268,7 @@ customElements.define('my-list', MyList);
 ```
 
 这样就可以得到如图所示的结构，#shadow-root (open) 表示这是一个开放的 Shadow DOM，下面的节点是直接从 template 中 clone 过来的，浏览器自动在三个 <slot> 标签下放置了几个灰色的 <div> 节点，实际上这些灰色的 <div> 节点表示的是到其真实节点的“引用”，鼠标移动到他们上会显示一个 reveal 链接，点击这个链接即可跳转至其真实节点。
-  (assets/shadow_root.png)
+  ![](assets/shadow_root.png)
 
 这里我们可以看到，虽然 <my-list> 下的子节点是乱序放置的，但是只要是给定了 slot 属性，就会被放置到正确的 <slot> 标签下。注意观察其中有一个 <div slot="other">flower</div>，这个节点由于指定了 slot="other"，但是却找不到匹配的 <slot> 标签，所以它不会被显示在结果中。
 
