@@ -16,7 +16,7 @@
 
 在说原生 HTML 组件之前，要先简单介绍一下四大 Web 组件标准，四大 Web 组件标准分别为：HTML Template、Shadow DOM、Custom Elements 和 HTML Imports。实际上其中一个已经被废弃了，所以变成“三大”了。
 
-HTML Template 相信很多人都有所耳闻，简单的讲也就是 HTML5 中的 <template> 标签，正常情况下它无色无味，感知不到它的存在，甚至它下面的 img 都不会被下载，script 都不会被执行。<template> 就如它的名字一样，它只是一个模版，只有到你用到它时，它才会变得有意义。
+HTML Template 相信很多人都有所耳闻，简单的讲也就是 HTML5 中的 `<template>` 标签，正常情况下它无色无味，感知不到它的存在，甚至它下面的 img 都不会被下载，script 都不会被执行。`<template>` 就如它的名字一样，它只是一个模版，只有到你用到它时，它才会变得有意义。
 
 Shadow DOM 则是原生组件封装的基本工具，它可以实现组件与组件之间的独立性。
 
@@ -84,13 +84,13 @@ video::-webkit-media-controls-overlay-play-button {
 
 ## ShadowRoot
 
-ShadowRoot 是 Shadow DOM 下面的根，你可以把它当做 DOM 中的 <body> 一样看待，但是它不是 <body>，所以你不能使用 <body> 上的一些属性，甚至它不是一个节点。
+ShadowRoot 是 Shadow DOM 下面的根，你可以把它当做 DOM 中的 `<body>` 一样看待，但是它不是 `<body>`，所以你不能使用 `<body>` 上的一些属性，甚至它不是一个节点。
 
 你可以通过 ShadowRoot 下面的 appendChild、querySelectorAll 之类的属性或方法去操作整个 Shadow DOM 树。
 
-对于一个普通的 Element，比如 <div>，你可以通过调用它上面的 attachShadow 方法来创建一个 ShadowRoot（还有一个 createShadowRoot 方法，已经过时不推荐使用），attachShadow 接受一个对象进行初始化：{ mode: 'open' }，这个对象有一个 mode 属性，它有两个取值：'open' 和 'closed'，这个属性是在创造 ShadowRoot 的时候需要初始化提供的，并在创建 ShadowRoot 之后成为一个只读属性。
+对于一个普通的 Element，比如 `<div>`，你可以通过调用它上面的 attachShadow 方法来创建一个 ShadowRoot（还有一个 createShadowRoot 方法，已经过时不推荐使用），attachShadow 接受一个对象进行初始化：{ mode: 'open' }，这个对象有一个 mode 属性，它有两个取值：'open' 和 'closed'，这个属性是在创造 ShadowRoot 的时候需要初始化提供的，并在创建 ShadowRoot 之后成为一个只读属性。
 
-mode: 'open' 和 mode: 'closed' 有什么区别呢？在调用 attachShadow 创建 ShadowRoot 之后，attachShdow 方法会返回 ShadowRoot 对象实例，你可以通过这个返回值去构造整个 Shadow DOM。当 mode 为 'open' 时，在用于创建 ShadowRoot 的外部普通节点（比如 <div>）上，会有一个 shadowRoot 属性，这个属性也就是创造出来的那个 ShadowRoot，也就是说，在创建 ShadowRoot 之后，还是可以在任何地方通过这个属性再得到 ShadowRoot，继续对其进行改造；而当 mode 为 'closed' 时，你将不能再得到这个属性，这个属性会被设置为 null，也就是说，你只能在 attachShadow 之后得到 ShadowRoot 对象，用于构造整个 Shadow DOM，一旦你失去对这个对象的引用，你就无法再对 Shadow DOM 进行改造了。
+mode: 'open' 和 mode: 'closed' 有什么区别呢？在调用 attachShadow 创建 ShadowRoot 之后，attachShdow 方法会返回 ShadowRoot 对象实例，你可以通过这个返回值去构造整个 Shadow DOM。当 mode 为 'open' 时，在用于创建 ShadowRoot 的外部普通节点（比如 `<div>`）上，会有一个 shadowRoot 属性，这个属性也就是创造出来的那个 ShadowRoot，也就是说，在创建 ShadowRoot 之后，还是可以在任何地方通过这个属性再得到 ShadowRoot，继续对其进行改造；而当 mode 为 'closed' 时，你将不能再得到这个属性，这个属性会被设置为 null，也就是说，你只能在 attachShadow 之后得到 ShadowRoot 对象，用于构造整个 Shadow DOM，一旦你失去对这个对象的引用，你就无法再对 Shadow DOM 进行改造了。
 
 可以从上面 Shadow DOM 的截图中看到 #shadow-root (user-agent) 的字样，这就是 ShadowRoot 对象了，而括号中的 user-agent 表示这是浏览器内部实现的 Shadow DOM，如果使用通过脚本自己创建的 ShadowRoot，括号中会显示为 open 或 closed 表示 Shadow DOM 的 mode。
 
@@ -104,7 +104,7 @@ mode: 'open' 和 mode: 'closed' 有什么区别呢？在调用 attachShadow 创�
 
 这个时候就可以请 HTML Template 出场了。我们可以在 html 文档中编写 DOM 结构，然后在 ShadowRoot 中加载过来即可。
 
-HTML Template 实际上就是在 html 中的一个 <template> 标签，正常情况下，这个标签下的内容是不会被渲染的，包括标签下的 img、style、script 等都是不会被加载或执行的。你可以在脚本中使用 getElementById 之类的方法得到 <template> 标签对应的节点，但是却无法直接访问到其内部的节点，因为默认他们只是模版，在浏览器中表现为 #document-fragment，字面意思就是“文档片段”，可以通过节点对象的 content 属性来访问到这个 document-fragment 对象。
+HTML Template 实际上就是在 html 中的一个 `<template>` 标签，正常情况下，这个标签下的内容是不会被渲染的，包括标签下的 img、style、script 等都是不会被加载或执行的。你可以在脚本中使用 getElementById 之类的方法得到 `<template>` 标签对应的节点，但是却无法直接访问到其内部的节点，因为默认他们只是模版，在浏览器中表现为 #document-fragment，字面意思就是“文档片段”，可以通过节点对象的 content 属性来访问到这个 document-fragment 对象。
   
 ![](assets/template.png)
 
@@ -129,13 +129,13 @@ shadowRoot.appendChild(copy);
 
 ## HTML Imports
 
-有了 HTML Template，我们已经可以方便地创造封闭的 Web 组件了，但是目前还有一些不完美的地方：我们必须要在 html 中定义一大批的 <template>，每个组件都要定义一个 <template>。
+有了 HTML Template，我们已经可以方便地创造封闭的 Web 组件了，但是目前还有一些不完美的地方：我们必须要在 html 中定义一大批的 `<template>`，每个组件都要定义一个 `<template>`。
 
 此时，我们就可以用到已经被废弃的 HTML Imports 了。虽然它已经被废弃了，但是未来会通过 ES6 Modules 的形式再进行支持，所以理论上也只是换个加载形式而已。
 
-通过 HTML Imports，我们可以将 <template> 定义在其他的 html 文档中，然后再在需要的 html 文档中进行导入（当然也可以通过脚本按需导入），导入后，我们就可以直接使用其中定义的模版节点了。
+通过 HTML Imports，我们可以将 `<template>` 定义在其他的 html 文档中，然后再在需要的 html 文档中进行导入（当然也可以通过脚本按需导入），导入后，我们就可以直接使用其中定义的模版节点了。
 
-已经废弃的 HTML Imports 通过 <link> 标签实现，只要指定 rel="import" 就可以了，就像这样：<link rel="import" href="./templates.html">，它可以接受 onload 和 onerror 事件以指示它已经加载完成。当然也可以通过脚本来创建 link 节点，然后指定 rel 和 href 来按需加载。Import 成功后，在 link 节点上有一个 import 属性，这个属性中存储的就是 import 进来的 DOM 树啦，可以 querySelector 之类的，并通过 cloneNode 或 document.importNode 方法创建副本后使用。
+已经废弃的 HTML Imports 通过 `<link>` 标签实现，只要指定 rel="import" 就可以了，就像这样：`<link rel="import" href="./templates.html">`，它可以接受 onload 和 onerror 事件以指示它已经加载完成。当然也可以通过脚本来创建 link 节点，然后指定 rel 和 href 来按需加载。Import 成功后，在 link 节点上有一个 import 属性，这个属性中存储的就是 import 进来的 DOM 树啦，可以 querySelector 之类的，并通过 cloneNode 或 document.importNode 方法创建副本后使用。
 
 未来新的 HTML Imports 将会以 ES6 Module 的形式提供，可以在 JavaScript 中直接 import * as template from './template.html';，也可以按需 import，像这样：const template = await import('./template.html');。不过目前虽然浏览器都已经支持 ES6 Modules，但是在 import 其他模块时会检查服务端返回文件的 MIME 类型必须为 JavaScript 的 MIME 类型，否则不允许加载。
 
@@ -195,9 +195,9 @@ window.customElements.define('my-element', class extends HTMLElement {
 });
 ```
 
-注册之后，我们就可以使用了，可以直接在 html 文档中写对应的标签，比如：<my-element></my-element>，也可以通过 document.createElement('my-element') 来创建，用法与普通标签几乎完全一样。但要注意的是，虽然 html 标准中说部分标签可以不关闭或是自关闭(<br> 或是 <br />)，但是只有规定的少数几个标签允许自关闭，所以，在 html 中写 Custom Elements 的节点时必须带上关闭标签。
+注册之后，我们就可以使用了，可以直接在 html 文档中写对应的标签，比如：`<my-element></my-element>`，也可以通过 document.createElement('my-element') 来创建，用法与普通标签几乎完全一样。但要注意的是，虽然 html 标准中说部分标签可以不关闭或是自关闭(`<br>` 或是 `<br />`)，但是只有规定的少数几个标签允许自关闭，所以，在 html 中写 Custom Elements 的节点时必须带上关闭标签。
 
-由于 Custom Elements 是通过 JavaScript 来定义的，而一般 js 文件都是通过 <script> 标签外联的，所以 html 文档中的 Custom Elements 在 JavaScript 未执行时是处于一个默认的状态，浏览器默认会将其内容直接显示出来。为了避免这样的情况发生，Custom Elements 在被注册后都会有一个 :defined CSS 伪类而在注册前没有，所以我们可以通过 CSS 选择器在 Custom Elements 注册前将其隐藏起来，比如：
+由于 Custom Elements 是通过 JavaScript 来定义的，而一般 js 文件都是通过 `<script>` 标签外联的，所以 html 文档中的 Custom Elements 在 JavaScript 未执行时是处于一个默认的状态，浏览器默认会将其内容直接显示出来。为了避免这样的情况发生，Custom Elements 在被注册后都会有一个 :defined CSS 伪类而在注册前没有，所以我们可以通过 CSS 选择器在 Custom Elements 注册前将其隐藏起来，比如：
   
 ```js
   my-element:not(:defined) {
@@ -207,7 +207,7 @@ window.customElements.define('my-element', class extends HTMLElement {
 
 或者 Custom Elements 也提供了一个函数来检测指定的组件是否已经被注册：customElements.whenDefined()，这个函数接受一个组件名参数，并返回一个 Promise，当 Promise 被 resolve 时，就表示组件被注册了。
 
-这样，我们就可以放心的在加载 Custom Elements 的 JavaScript 的 <script> 标签上使用 async 属性来延迟加载了（当然，如果是使用 ES6 Modules 形式的话默认的加载行为就会和 defer 类似）。
+这样，我们就可以放心的在加载 Custom Elements 的 JavaScript 的 `<script>` 标签上使用 async 属性来延迟加载了（当然，如果是使用 ES6 Modules 形式的话默认的加载行为就会和 defer 类似）。
   
  ![](assets/custom_elements.svg)
   
@@ -219,13 +219,13 @@ window.customElements.define('my-element', class extends HTMLElement {
 
 正常编写 html 文档时，我们可能会给 Custom Elements 添加一些子节点，像这样：`<my-element><h1>Title</h1><p>Content</p></my-element>`，而我们创建的 Shadow DOM 又拥有其自己的结构，怎样将这些子节点放置到 Shadow DOM 中正确的位置上呢？
 
-在 React 中，这些子节点被放置在 props 的 children 中，我们可以在 render() 时选择将它放在哪里。而在 Shadow DOM 中有一个特殊的标签：<slot>，这个标签的用处就如同其字面意思，在 Shadow DOM 上放置一个“插槽”，然后 Custom Elements 的子节点就会自动放置到这个“插槽”中了。
+在 React 中，这些子节点被放置在 props 的 children 中，我们可以在 render() 时选择将它放在哪里。而在 Shadow DOM 中有一个特殊的标签：`<slot>`，这个标签的用处就如同其字面意思，在 Shadow DOM 上放置一个“插槽”，然后 Custom Elements 的子节点就会自动放置到这个“插槽”中了。
 
-有时我们需要更加精确地控制子节点在 Shadow DOM 中的位置，而默认情况下，所有子节点都会被放置在同一个 <slot> 标签下，即便是你写了多个 <slot>。那怎样更精确地对子节点进行控制呢？
+有时我们需要更加精确地控制子节点在 Shadow DOM 中的位置，而默认情况下，所有子节点都会被放置在同一个 `<slot>` 标签下，即便是你写了多个 `<slot>`。那怎样更精确地对子节点进行控制呢？
 
-默认情况下，<slot>Fallback</slot> 这样的是默认的 <slot>，只有第一个默认的 <slot> 会有效，将所有子节点全部放进去，如果没有可用的子节点，将会显示默认的 Fallback 内容（Fallback 可以是一棵子 DOM 树）。
+默认情况下，`<slot>Fallback</slot>` 这样的是默认的 `<slot>`，只有第一个默认的 `<slot>` 会有效，将所有子节点全部放进去，如果没有可用的子节点，将会显示默认的 Fallback 内容（Fallback 可以是一棵子 DOM 树）。
 
-<slot> 标签有一个 name 属性，当你提供 name 后，它将变为一个“有名字的 <slot>”，这样的 <slot> 可以存在多个，只要名字各不相同。此时他们会自动匹配 Custom Elements 下带 slot 属性并且 slot 属性与自身 name 相同的子节点，像这样：
+`<slot>` 标签有一个 name 属性，当你提供 name 后，它将变为一个“有名字的 `<slot>`”，这样的 `<slot>` 可以存在多个，只要名字各不相同。此时他们会自动匹配 Custom Elements 下带 slot 属性并且 slot 属性与自身 name 相同的子节点，像这样：
 
 ```html
 <template id="list">
@@ -267,16 +267,16 @@ class MyList extends HTMLElement {
 customElements.define('my-list', MyList);
 ```
 
-这样就可以得到如图所示的结构，#shadow-root (open) 表示这是一个开放的 Shadow DOM，下面的节点是直接从 template 中 clone 过来的，浏览器自动在三个 <slot> 标签下放置了几个灰色的 <div> 节点，实际上这些灰色的 <div> 节点表示的是到其真实节点的“引用”，鼠标移动到他们上会显示一个 reveal 链接，点击这个链接即可跳转至其真实节点。
+这样就可以得到如图所示的结构，#shadow-root (open) 表示这是一个开放的 Shadow DOM，下面的节点是直接从 template 中 clone 过来的，浏览器自动在三个 `<slot>` 标签下放置了几个灰色的 `<div>` 节点，实际上这些灰色的 `<div>` 节点表示的是到其真实节点的“引用”，鼠标移动到他们上会显示一个 reveal 链接，点击这个链接即可跳转至其真实节点。
   ![](assets/shadow_root.png)
 
-这里我们可以看到，虽然 <my-list> 下的子节点是乱序放置的，但是只要是给定了 slot 属性，就会被放置到正确的 <slot> 标签下。注意观察其中有一个 <div slot="other">flower</div>，这个节点由于指定了 slot="other"，但是却找不到匹配的 <slot> 标签，所以它不会被显示在结果中。
+这里我们可以看到，虽然 `<my-list>` 下的子节点是乱序放置的，但是只要是给定了 slot 属性，就会被放置到正确的 <slot> 标签下。注意观察其中有一个 `<div slot="other">flower</div>`，这个节点由于指定了 slot="other"，但是却找不到匹配的 `<slot>` 标签，所以它不会被显示在结果中。
 
-在为 Custom Elements 下的 Shadow DOM 设置样式的时候，我们可以直接在 Shadow DOM 下放置 <style> 标签，也可以放置 <link rel="stylesheet">，Shadow DOM 下的样式都是局部的，所以不用担心会影响到 Shadow DOM 的外部。并且由于这些样式仅影响局部🌻，所以对性能也有很大的提升。
+在为 Custom Elements 下的 Shadow DOM 设置样式的时候，我们可以直接在 Shadow DOM 下放置 `<style>` 标签，也可以放置 `<link rel="stylesheet">`，Shadow DOM 下的样式都是局部的，所以不用担心会影响到 Shadow DOM 的外部。并且由于这些样式仅影响局部🌻，所以对性能也有很大的提升。
 
 在 Shadow DOM 内部的样式中，也有一些特定的选择器，比如 :host 选择器，代表着 ShadowRoot，这类似于普通 DOM 中的 :root，并且它可以与其他伪类组合使用，比如当鼠标在组件上时：:host(:hover)，当组件拥有某个 class 时：:host(.awesome)，当组件拥有 disabled 属性时：:host([disabled])……但是 :host 是拥有继承属性的，所以如果在 Custom Elements 外部定义了某些样式，将会覆盖 :host 中的样式，这样就可以轻松地实现各式各样的“主题风格”了。
 
-为了实现自定义主题，我们还可以使用 Shadow DOM 提供的 :host-context() 选择器，这个选择器允许检查 Shadow DOM 的任何祖先节点是否包含指定选择器。比如如果在最外层 DOM 的 <html> 或 <body> 上有一个 class：.night，则 Shadow DOM 内就可以使用 :host-context(.night) 来指定一个夜晚的主题。这样可以实现主题样式的继承。
+为了实现自定义主题，我们还可以使用 Shadow DOM 提供的 :host-context() 选择器，这个选择器允许检查 Shadow DOM 的任何祖先节点是否包含指定选择器。比如如果在最外层 DOM 的 `<html>` 或 `<body>` 上有一个 class：.night，则 Shadow DOM 内就可以使用 :host-context(.night) 来指定一个夜晚的主题。这样可以实现主题样式的继承。
 
 还有一种样式的定义方式是利用 CSS 变量。我们在 Shadow DOM 中使用变量来指定样式，比如：background-color: var(--bg-colour, #0F0);，这样就可以在 Shadow DOM 外面指定 --bg-colour 变量来设置样式了，如果没有指定变量，将使用默认的样式颜色 #0F0。
 
